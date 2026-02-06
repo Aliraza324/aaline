@@ -15,7 +15,7 @@ const Header = () => {
     { name: 'Resources', path: '/resources' },
     { name: 'Contacts', path: '/contacts' },
   ]
-
+// aaaaaaaaaaa
   return (
     <header className="bg-white border-b border-gray-200">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-4">

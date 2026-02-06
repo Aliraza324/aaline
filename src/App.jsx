@@ -1,7 +1,9 @@
-import React from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Header from './reuseable/Header'
 import Home from './pages/home/Home'
+import Footer from './reuseable/Footer'
+import Loader from './reuseable/Loader'
 
 // Placeholder page components
 const AboutUs = () => <div className="p-8"><h1 className="text-3xl font-bold">About Us</h1></div>
@@ -11,6 +13,22 @@ const Resources = () => <div className="p-8"><h1 className="text-3xl font-bold">
 const Contacts = () => <div className="p-8"><h1 className="text-3xl font-bold">Contacts</h1></div>
 
 const App = () => {
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    // Simulate initial loading
+    const timer = setTimeout(() => {
+      setLoading(false)
+    }, 2000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  // Show loader while loading
+  if (loading) {
+    return <Loader variant="bulb" text="Illuminating Your Experience..." />
+  }
+
   return (
     <Router>
       <div className="min-h-screen bg-white">
@@ -26,6 +44,7 @@ const App = () => {
             <Route path="/contact" element={<Contacts />} />
           </Routes>
         </main>
+        <Footer/>
       </div>
     </Router>
   )

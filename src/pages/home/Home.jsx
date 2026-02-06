@@ -7,6 +7,9 @@ import OurSolutions from '../../components/home/OurSolutions'
 import Illuminate from '../../components/home/Illuminate'
 import Sustainability from '../../components/home/Sustainability'
 import Testimonials from '../../components/home/Testimonials'
+import Blog from '../../components/home/Blog'
+import Bulb from '../../components/home/Bulb'
+import Faqs from '../../components/home/Faqs'
 
 const Home = () => {
   return (
@@ -19,6 +22,9 @@ const Home = () => {
         <Illuminate/>
         <Sustainability/>
         <Testimonials/>
+        <Blog/>
+        <Bulb/>
+        <Faqs/>
     </div>
   )
 }
