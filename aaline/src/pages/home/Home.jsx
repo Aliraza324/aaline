@@ -6,6 +6,7 @@ import FeatureCollection from '../../components/home/FeatureCollection'
 import OurSolutions from '../../components/home/OurSolutions'
 import Illuminate from '../../components/home/Illuminate'
 import Sustainability from '../../components/home/Sustainability'
+import Testimonials from '../../components/home/Testimonials'
 
 const Home = () => {
   return (
@@ -17,6 +18,7 @@ const Home = () => {
         <OurSolutions/>
         <Illuminate/>
         <Sustainability/>
+        <Testimonials/>
     </div>
   )
 }

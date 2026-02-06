@@ -1,4 +1,3 @@
-import React from 'react'
 import aboutLeft from '../../assets/images/aboutLeft.png'
 
 const AboutCompany = () => {
@@ -12,7 +11,7 @@ const AboutCompany = () => {
   return (
     <section className="w-full px-4 py-12 md:py-20">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 ">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Left side - Image with experience card */}
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden">
@@ -23,6 +22,28 @@ const AboutCompany = () => {
               />
             </div>
 
+            {/* Experience Card Overlay */}
+            <div className="absolute bottom-0 left-0 bg-[#f57c00] text-white p-8 md:p-10 rounded-tr-3xl">
+              <div className="relative">
+                {/* Decorative circles */}
+                <div className="absolute -top-2 left-0 w-8 h-8 border-2 border-white rounded-full flex items-center justify-center">
+                  <div className="w-2 h-0.5 bg-white"></div>
+                </div>
+                <div className="absolute -bottom-2 right-0 w-8 h-8 border-2 border-white rounded-full flex items-center justify-center">
+                  <div className="w-0.5 h-2 bg-white"></div>
+                  <div className="w-2 h-0.5 bg-white absolute"></div>
+                </div>
+
+                <h3
+                  className="text-6xl md:text-7xl font-bold mb-2"
+                  style={{ fontFamily: 'Oxanium, sans-serif' }}
+                >
+                  30
+                </h3>
+                <p className="text-xl md:text-2xl font-medium">Years of</p>
+                <p className="text-xl md:text-2xl font-medium">experience</p>
+              </div>
+            </div>
           </div>
 
           {/* Right side - Content */}
@@ -30,7 +51,7 @@ const AboutCompany = () => {
             <div className="space-y-6">
               <div className="inline-block relative mb-2">
                 <h3
-                  className="text-xl  font-bold tracking-wider uppercase text-gray-900 relative z-10 px-2"
+                  className="text-xl font-bold tracking-wider uppercase text-gray-900 relative z-10 px-2"
                   style={{ fontFamily: 'Oxanium, sans-serif' }}
                 >
                   ABOUT COMPANY
