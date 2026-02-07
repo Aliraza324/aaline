@@ -1,8 +1,9 @@
 import React from 'react'
+import { motion } from 'framer-motion'
 import blogOneImg from '../../assets/images/blogOneImg.png'
 import blogTwoImg from '../../assets/images/blogTwoImg.png'
 import blogThreeImg from '../../assets/images/blogThreeImg.png'
-import { useScrollAnimation } from '../../hooks/useScrollAnimation'
+import { sectionBadge, sectionHeading, viewport } from '../../utils/motion'
 
 const Blog = () => {
   const blogPosts = [
@@ -29,18 +30,31 @@ const Blog = () => {
     }
   ]
 
-  const [titleRef, titleVisible] = useScrollAnimation({ threshold: 0.3 })
-  const [headingRef, headingVisible] = useScrollAnimation({ threshold: 0.3 })
-  const [gridRef, gridVisible] = useScrollAnimation({ threshold: 0.1 })
+  const cardVariants = {
+    hidden: { opacity: 0, y: 50, scale: 0.95 },
+    visible: (i) => ({
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.6,
+        delay: i * 0.15,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    })
+  }
 
   return (
     <section className="bg-white py-12 md:py-20">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
         {/* Header */}
         <div className="text-center mb-12">
-          <div
-            ref={titleRef}
-            className={`inline-block relative mb-4 fade-in ${titleVisible ? 'visible' : ''}`}
+          <motion.div
+            className="inline-block relative mb-4"
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewport}
+            variants={sectionBadge}
           >
             <h3
               className="text-xl font-bold tracking-wider uppercase text-gray-900 relative z-10 px-2"
@@ -48,24 +62,40 @@ const Blog = () => {
             >
               OUR BLOG
             </h3>
-            {/* Orange highlight background */}
-            <div className="absolute bottom-0 left-0 w-full h-3 bg-[#E48400] z-0"></div>
-          </div>
-          <h2
-            ref={headingRef}
-            className={`text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-900 mt-6 slide-up ${headingVisible ? 'visible' : ''}`}
+            <motion.div
+              className="absolute bottom-0 left-0 w-full h-3 bg-[#E48400] z-0"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2, ease: [0.77, 0, 0.175, 1] }}
+              style={{ transformOrigin: 'left' }}
+            />
+          </motion.div>
+          <motion.h2
+            className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-900 mt-6"
             style={{ fontFamily: 'Oxanium, sans-serif' }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewport}
+            variants={sectionHeading}
           >
             Recent articles
-          </h2>
+          </motion.h2>
         </div>
 
         {/* Blog Grid */}
-        <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {blogPosts.map((post) => (
-            <div
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {blogPosts.map((post, index) => (
+            <motion.div
               key={post.id}
-              className={`group cursor-pointer bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 stagger-item ${gridVisible ? 'visible' : ''}`}
+              className="group cursor-pointer bg-white rounded-lg overflow-hidden shadow-sm"
+              custom={index}
+              initial="hidden"
+              whileInView="visible"
+              viewport={viewport}
+              variants={cardVariants}
+              whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(0,0,0,0.12)' }}
+              transition={{ duration: 0.3 }}
             >
               {/* Image Container with Date Badge */}
               <div className="relative overflow-hidden">
@@ -93,7 +123,7 @@ const Blog = () => {
                   {post.title}
                 </h3>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

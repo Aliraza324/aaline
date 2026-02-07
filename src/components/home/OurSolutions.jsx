@@ -1,6 +1,15 @@
 import React from 'react'
+import { motion } from 'framer-motion'
 import middleImage from '../../assets/images/middleImage.png'
-import { useScrollAnimation } from '../../hooks/useScrollAnimation'
+import {
+  sectionBadge,
+  sectionHeading,
+  slideFromLeft,
+  slideFromRight,
+  scaleIn,
+  floatAnimation,
+  viewport
+} from '../../utils/motion'
 
 const OurSolutions = () => {
   const leftSolutions = [
@@ -45,20 +54,17 @@ const OurSolutions = () => {
     }
   ]
 
-  const [titleRef, titleVisible] = useScrollAnimation({ threshold: 0.3 })
-  const [headingRef, headingVisible] = useScrollAnimation({ threshold: 0.3 })
-  const [leftRef, leftVisible] = useScrollAnimation({ threshold: 0.2 })
-  const [imageRef, imageVisible] = useScrollAnimation({ threshold: 0.3 })
-  const [rightRef, rightVisible] = useScrollAnimation({ threshold: 0.2 })
-
   return (
     <section className="w-full px-4 py-12 md:py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12 md:mb-16">
-          <div
-            ref={titleRef}
-            className={`inline-block relative mb-4 fade-in ${titleVisible ? 'visible' : ''}`}
+          <motion.div
+            className="inline-block relative mb-4"
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewport}
+            variants={sectionBadge}
           >
             <h3
               className="text-xl font-bold tracking-wider uppercase text-gray-900 relative z-10 px-2"
@@ -66,35 +72,49 @@ const OurSolutions = () => {
             >
               OUR SOLUTIONS
             </h3>
-            {/* Orange highlight background */}
-            <div className="absolute bottom-0 left-0 w-full h-3 bg-[#f57c00] z-0"></div>
-          </div>
-          <h2
-            ref={headingRef}
-            className={`text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight slide-up ${headingVisible ? 'visible' : ''}`}
+            <motion.div
+              className="absolute bottom-0 left-0 w-full h-3 bg-[#f57c00] z-0"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2, ease: [0.77, 0, 0.175, 1] }}
+              style={{ transformOrigin: 'left' }}
+            />
+          </motion.div>
+          <motion.h2
+            className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight"
             style={{ fontFamily: 'Oxanium, sans-serif' }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewport}
+            variants={sectionHeading}
           >
             Full range of design-led solutions
-          </h2>
+          </motion.h2>
         </div>
 
         {/* Solutions Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 items-center">
           {/* Left Solutions */}
-          <div ref={leftRef} className="space-y-8 md:space-y-10">
+          <div className="space-y-8 md:space-y-10">
             {leftSolutions.map((solution, index) => (
-              <div
+              <motion.div
                 key={index}
-                className={`space-y-2 slide-right ${leftVisible ? 'visible' : ''}`}
-                style={{ transitionDelay: `${index * 0.15}s` }}
+                className="space-y-2"
+                initial="hidden"
+                whileInView="visible"
+                viewport={viewport}
+                variants={slideFromLeft(index * 0.15)}
               >
                 <div className="flex items-start gap-3 group cursor-pointer">
-                  <span
-                    className="text-[#f57c00] text-2xl font-semibold shrink-0 transition-transform duration-300 group-hover:scale-110"
+                  <motion.span
+                    className="text-[#f57c00] text-2xl font-semibold shrink-0"
                     style={{ fontFamily: 'Oxanium, sans-serif' }}
+                    whileHover={{ scale: 1.15 }}
+                    transition={{ type: 'spring', stiffness: 300 }}
                   >
                     {solution.number}
-                  </span>
+                  </motion.span>
                   <div>
                     <h3
                       className="text-gray-900 text-lg md:text-xl font-semibold mb-2 transition-colors duration-300 group-hover:text-[#f57c00]"
@@ -107,37 +127,46 @@ const OurSolutions = () => {
                     </p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
 
           {/* Middle Image */}
-          <div
-            ref={imageRef}
-            className={`flex justify-center items-center order-first lg:order-0 scale-in ${imageVisible ? 'visible' : ''}`}
+          <motion.div
+            className="flex justify-center items-center order-first lg:order-0"
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewport}
+            variants={scaleIn}
           >
-            <img
+            <motion.img
               src={middleImage}
               alt="Design-led lighting solutions"
-              className="w-full max-w-md lg:max-w-full h-auto object-contain float-animation"
+              className="w-full max-w-md lg:max-w-full h-auto object-contain"
+              animate={floatAnimation}
             />
-          </div>
+          </motion.div>
 
           {/* Right Solutions */}
-          <div ref={rightRef} className="space-y-8 md:space-y-10">
+          <div className="space-y-8 md:space-y-10">
             {rightSolutions.map((solution, index) => (
-              <div
+              <motion.div
                 key={index}
-                className={`space-y-2 slide-left ${rightVisible ? 'visible' : ''}`}
-                style={{ transitionDelay: `${index * 0.15}s` }}
+                className="space-y-2"
+                initial="hidden"
+                whileInView="visible"
+                viewport={viewport}
+                variants={slideFromRight(index * 0.15)}
               >
                 <div className="flex items-start gap-3 lg:flex-row-reverse group cursor-pointer">
-                  <span
-                    className="text-[#f57c00] text-2xl font-semibold shrink-0 transition-transform duration-300 group-hover:scale-110"
+                  <motion.span
+                    className="text-[#f57c00] text-2xl font-semibold shrink-0"
                     style={{ fontFamily: 'Oxanium, sans-serif' }}
+                    whileHover={{ scale: 1.15 }}
+                    transition={{ type: 'spring', stiffness: 300 }}
                   >
                     {solution.number}
-                  </span>
+                  </motion.span>
                   <div className="lg:text-right">
                     <h3
                       className="text-gray-900 text-lg md:text-xl font-semibold mb-2 transition-colors duration-300 group-hover:text-[#f57c00]"
@@ -150,7 +179,7 @@ const OurSolutions = () => {
                     </p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

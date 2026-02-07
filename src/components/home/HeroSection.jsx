@@ -1,79 +1,108 @@
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import heroRight from '../../assets/images/heroRight.png'
-import { useScrollAnimation } from '../../hooks/useScrollAnimation'
+import { fadeInUp, scaleIn, floatAnimation, popIn, viewport } from '../../utils/motion'
 
 const HeroSection = () => {
-  const [badgeRef, badgeVisible] = useScrollAnimation({ threshold: 0.3 })
-  const [headingRef, headingVisible] = useScrollAnimation({ threshold: 0.3 })
-  const [descRef, descVisible] = useScrollAnimation({ threshold: 0.3 })
-  const [buttonsRef, buttonsVisible] = useScrollAnimation({ threshold: 0.3 })
-  const [imageRef, imageVisible] = useScrollAnimation({ threshold: 0.2 })
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: { staggerChildren: 0.18, delayChildren: 0.2 }
+    }
+  }
+
+  const badgeVariants = {
+    hidden: { opacity: 0, scale: 0.8, y: 20 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: { duration: 0.5, type: 'spring', stiffness: 150, damping: 12 }
+    }
+  }
 
   return (
     <section className="bg-[#FAFAFA] py-12 md:py-20 overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Left Content */}
-          <div className="order-1 lg:order-1 text-center lg:text-left">
+          <motion.div
+            className="order-1 lg:order-1 text-center lg:text-left"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewport}
+          >
             {/* Badge */}
-            <div
-              ref={badgeRef}
-              className={`inline-flex items-center gap-2 border border-gray-800 rounded-full px-4 py-2 mb-6 fade-in ${badgeVisible ? 'visible' : ''}`}
+            <motion.div
+              variants={badgeVariants}
+              className="inline-flex items-center gap-2 border border-gray-800 rounded-full px-4 py-2 mb-6"
             >
-              <span className="w-2 h-2 bg-gray-800 rounded-full pulse-subtle"></span>
+              <motion.span
+                className="w-2 h-2 bg-gray-800 rounded-full"
+                animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              />
               <span className="text-sm text-gray-800 font-medium">
                 Architectural lighting company
               </span>
-            </div>
+            </motion.div>
 
             {/* Heading */}
-            <h1
-              ref={headingRef}
-              className={`text-4xl sm:text-5xl lg:text-6xl xl:text-6xl font-bold text-gray-900 mb-6 leading-tight slide-up ${headingVisible ? 'visible' : ''}`}
+            <motion.h1
+              variants={fadeInUp}
+              className="text-4xl sm:text-5xl lg:text-6xl xl:text-6xl font-bold text-gray-900 mb-6 leading-tight"
               style={{ fontFamily: "'Oxanium', sans-serif" }}
             >
               Architectural Lighting & <br /> Acoustic Solutions
-            </h1>
+            </motion.h1>
+
             {/* Description */}
-            <p
-              ref={descRef}
-              className={`text-gray-600 text-base sm:text-lg mb-8 max-w-xl mx-auto lg:mx-0 slide-up ${descVisible ? 'visible' : ''}`}
+            <motion.p
+              variants={fadeInUp}
+              className="text-gray-600 text-base sm:text-lg mb-8 max-w-xl mx-auto lg:mx-0"
             >
               We create refined lighting and acoustic products that enhance spaces through thoughtful design, sustainable materials, and precision manufacturing
-            </p>
+            </motion.p>
 
             {/* Buttons */}
-            <div
-              ref={buttonsRef}
-              className={`flex flex-col sm:flex-row gap-4 justify-center lg:justify-start slide-up ${buttonsVisible ? 'visible' : ''}`}
+            <motion.div
+              variants={fadeInUp}
+              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
             >
-              <Link
-                to="/products"
-                className="bg-[#E48400] hover:bg-[#d17900] text-white px-8 py-3.5 rounded-lg font-medium text-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-              >
-                Explore Products
-              </Link>
-              <Link
-                to="/projects"
-                className="bg-white hover:bg-gray-50 text-gray-800 px-8 py-3.5 rounded-lg font-medium text-sm border border-gray-300 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-              >
-                View Projects
-              </Link>
-            </div>
-          </div>
+              <motion.div whileHover={{ y: -4, boxShadow: '0 10px 30px rgba(228,132,0,0.3)' }} whileTap={{ scale: 0.97 }}>
+                <Link
+                  to="/products"
+                  className="block bg-[#E48400] hover:bg-[#d17900] text-white px-8 py-3.5 rounded-lg font-medium text-sm transition-colors duration-300"
+                >
+                  Explore Products
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ y: -4, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }} whileTap={{ scale: 0.97 }}>
+                <Link
+                  to="/projects"
+                  className="block bg-white hover:bg-gray-50 text-gray-800 px-8 py-3.5 rounded-lg font-medium text-sm border border-gray-300 transition-colors duration-300"
+                >
+                  View Projects
+                </Link>
+              </motion.div>
+            </motion.div>
+          </motion.div>
 
           {/* Right Image Section */}
           <div className="order-1 relative">
-            <div
-              ref={imageRef}
-              className={`scale-in ${imageVisible ? 'visible' : ''}`}
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={viewport}
+              variants={scaleIn}
             >
-              <img
+              <motion.img
                 src={heroRight}
                 alt="Architectural Lighting Solutions"
-                className="float-animation"
+                animate={floatAnimation}
               />
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>

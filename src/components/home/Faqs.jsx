@@ -1,6 +1,13 @@
 import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import sectionImg from '../../assets/images/sections.png'
-import { useScrollAnimation } from '../../hooks/useScrollAnimation'
+import {
+  sectionBadge,
+  sectionHeading,
+  imageReveal,
+  accordionContent,
+  viewport
+} from '../../utils/motion'
 
 const Faqs = () => {
   const [openIndex, setOpenIndex] = useState(0)
@@ -28,10 +35,18 @@ const Faqs = () => {
     setOpenIndex(openIndex === index ? -1 : index)
   }
 
-  const [titleRef, titleVisible] = useScrollAnimation({ threshold: 0.3 })
-  const [headingRef, headingVisible] = useScrollAnimation({ threshold: 0.3 })
-  const [faqsRef, faqsVisible] = useScrollAnimation({ threshold: 0.1 })
-  const [imageRef, imageVisible] = useScrollAnimation({ threshold: 0.3 })
+  const faqItemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        delay: i * 0.1,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    })
+  }
 
   return (
     <section className="bg-white py-12 md:py-20">
@@ -41,9 +56,12 @@ const Faqs = () => {
           <div>
             {/* Header */}
             <div className="mb-8">
-              <div
-                ref={titleRef}
-                className={`inline-block relative mb-4 fade-in ${titleVisible ? 'visible' : ''}`}
+              <motion.div
+                className="inline-block relative mb-4"
+                initial="hidden"
+                whileInView="visible"
+                viewport={viewport}
+                variants={sectionBadge}
               >
                 <h3
                   className="text-sm font-bold tracking-wider uppercase text-gray-900 relative z-10 px-2"
@@ -51,24 +69,38 @@ const Faqs = () => {
                 >
                   EXPLORE FAQ'S
                 </h3>
-                {/* Orange highlight background */}
-                <div className="absolute bottom-0 left-0 w-full h-2 bg-[#E48400] z-0"></div>
-              </div>
-              <h2
-                ref={headingRef}
-                className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight slide-up ${headingVisible ? 'visible' : ''}`}
+                <motion.div
+                  className="absolute bottom-0 left-0 w-full h-2 bg-[#E48400] z-0"
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.2, ease: [0.77, 0, 0.175, 1] }}
+                  style={{ transformOrigin: 'left' }}
+                />
+              </motion.div>
+              <motion.h2
+                className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight"
                 style={{ fontFamily: 'Oxanium, sans-serif' }}
+                initial="hidden"
+                whileInView="visible"
+                viewport={viewport}
+                variants={sectionHeading}
               >
                 Popular questions about our company
-              </h2>
+              </motion.h2>
             </div>
 
             {/* FAQ Accordion */}
-            <div ref={faqsRef} className="space-y-4">
+            <div className="space-y-4">
               {faqs.map((faq, index) => (
-                <div
+                <motion.div
                   key={index}
-                  className={`border border-gray-200 rounded-lg overflow-hidden stagger-item ${faqsVisible ? 'visible' : ''}`}
+                  className="border border-gray-200 rounded-lg overflow-hidden"
+                  custom={index}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={viewport}
+                  variants={faqItemVariants}
                 >
                   {/* Question Button */}
                   <button
@@ -81,35 +113,55 @@ const Faqs = () => {
                     >
                       {faq.question}
                     </span>
-                    <span className={`flex-shrink-0 ml-4 w-8 h-8 rounded-md bg-[#E48400] text-white flex items-center justify-center text-xl font-bold transition-all duration-300 group-hover:scale-110 ${openIndex === index ? 'rotate-180' : ''}`}>
-                      {openIndex === index ? '−' : '+'}
-                    </span>
+                    <motion.span
+                      className="flex-shrink-0 ml-4 w-8 h-8 rounded-md bg-[#E48400] text-white flex items-center justify-center text-xl font-bold"
+                      animate={{ rotate: openIndex === index ? 45 : 0 }}
+                      transition={{ duration: 0.3, ease: 'easeOut' }}
+                      whileHover={{ scale: 1.1 }}
+                    >
+                      +
+                    </motion.span>
                   </button>
 
-                  {/* Answer */}
-                  {openIndex === index && (
-                    <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-2 bg-gray-50 animate-on-scroll visible">
-                      <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
-                        {faq.answer}
-                      </p>
-                    </div>
-                  )}
-                </div>
+                  {/* Answer with smooth height animation */}
+                  <AnimatePresence>
+                    {openIndex === index && (
+                      <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        exit="hidden"
+                        variants={accordionContent}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-2 bg-gray-50">
+                          <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                            {faq.answer}
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
               ))}
             </div>
           </div>
 
-          {/* Right Side - Images */}
-          <div
-            ref={imageRef}
-            className={`relative h-[400px] sm:h-[500px] lg:h-[600px] scale-in ${imageVisible ? 'visible' : ''}`}
+          {/* Right Side - Image */}
+          <motion.div
+            className="relative h-[400px] sm:h-[500px] lg:h-[600px]"
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewport}
+            variants={imageReveal}
           >
-            <img
+            <motion.img
               src={sectionImg}
               alt="Electrical services"
-              className="w-full h-full object-cover rounded-2xl hover:scale-105 transition-transform duration-700"
+              className="w-full h-full object-cover rounded-2xl"
+              whileHover={{ scale: 1.03 }}
+              transition={{ duration: 0.5 }}
             />
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
