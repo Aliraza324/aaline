@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useScrollAnimation } from '../../hooks/useScrollAnimation'
+import { sectionBadge, sectionHeading, viewport } from '../../utils/motion'
 
 const Testimonials = () => {
   const [activeIndex, setActiveIndex] = useState(0)
-  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [direction, setDirection] = useState(1)
 
   const testimonials = [
     {
@@ -40,40 +41,60 @@ const Testimonials = () => {
   ]
 
   const handlePrev = () => {
-    setIsTransitioning(true)
-    setTimeout(() => {
-      setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1))
-      setIsTransitioning(false)
-    }, 300)
+    setDirection(-1)
+    setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1))
   }
 
   const handleNext = () => {
-    setIsTransitioning(true)
-    setTimeout(() => {
-      setActiveIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1))
-      setIsTransitioning(false)
-    }, 300)
+    setDirection(1)
+    setActiveIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1))
   }
 
   const currentTestimonial = testimonials[activeIndex]
 
-  const [titleRef, titleVisible] = useScrollAnimation({ threshold: 0.3 })
-  const [headingRef, headingVisible] = useScrollAnimation({ threshold: 0.3 })
-  const [sliderRef, sliderVisible] = useScrollAnimation({ threshold: 0.1 })
+  const slideVariants = {
+    enter: (dir) => ({ opacity: 0, x: dir * 120, scale: 0.95 }),
+    center: {
+      opacity: 1,
+      x: 0,
+      scale: 1,
+      transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }
+    },
+    exit: (dir) => ({
+      opacity: 0,
+      x: dir * -120,
+      scale: 0.95,
+      transition: { duration: 0.4, ease: 'easeIn' }
+    })
+  }
 
-  // Reset transition state when activeIndex changes
-  useEffect(() => {
-    setIsTransitioning(false)
-  }, [activeIndex])
+  const cardVariants = {
+    enter: (dir) => ({ opacity: 0, x: dir * 80, y: 20 }),
+    center: {
+      opacity: 1,
+      x: 0,
+      y: 0,
+      transition: { duration: 0.5, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }
+    },
+    exit: (dir) => ({
+      opacity: 0,
+      x: dir * -80,
+      y: -10,
+      transition: { duration: 0.35, ease: 'easeIn' }
+    })
+  }
 
   return (
     <section className="w-full px-4 py-12 md:py-20 bg-white">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12 md:mb-16">
-          <div
-            ref={titleRef}
-            className={`inline-block relative mb-4 fade-in ${titleVisible ? 'visible' : ''}`}
+          <motion.div
+            className="inline-block relative mb-4"
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewport}
+            variants={sectionBadge}
           >
             <h3
               className="text-xl font-bold tracking-wider uppercase text-gray-900 relative z-10 px-2"
@@ -81,101 +102,134 @@ const Testimonials = () => {
             >
               TESTIMONIALS
             </h3>
-            {/* Orange highlight background */}
-            <div className="absolute bottom-0 left-0 w-full h-3 bg-[#f57c00] z-0"></div>
-          </div>
-          <h2
-            ref={headingRef}
-            className={`text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 slide-up ${headingVisible ? 'visible' : ''}`}
+            <motion.div
+              className="absolute bottom-0 left-0 w-full h-3 bg-[#f57c00] z-0"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2, ease: [0.77, 0, 0.175, 1] }}
+              style={{ transformOrigin: 'left' }}
+            />
+          </motion.div>
+          <motion.h2
+            className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900"
             style={{ fontFamily: 'Oxanium, sans-serif' }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewport}
+            variants={sectionHeading}
           >
             What our clients say
-          </h2>
+          </motion.h2>
         </div>
 
         {/* Testimonial Slider */}
-        <div
-          ref={sliderRef}
-          className={`relative pb-20 fade-in ${sliderVisible ? 'visible' : ''}`}
+        <motion.div
+          className="relative pb-20"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={viewport}
+          transition={{ duration: 0.6, delay: 0.2 }}
         >
           <div className="flex flex-col lg:flex-row gap-8 items-start justify-center">
-            {/* Left side - Client Image (448px x 600px) */}
-            <div
-              className={`relative w-full lg:w-md h-100 md:h-125 lg:h-150 rounded-3xl overflow-hidden shrink-0 transition-all duration-500 ${
-                isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
-              }`}
-            >
-              <img
-                src={currentTestimonial.clientImage}
-                alt={currentTestimonial.clientName}
-                className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-              />
-              {/* Quote Overlay */}
-              <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/90 via-black/70 to-transparent p-6 md:p-8 transition-all duration-500">
-                <p className="text-white text-base md:text-lg lg:text-xl font-medium">
-                  {currentTestimonial.imageQuote}
-                </p>
-              </div>
+            {/* Left side - Client Image */}
+            <div className="relative w-full lg:w-md h-100 md:h-125 lg:h-150 rounded-3xl overflow-hidden shrink-0">
+              <AnimatePresence mode="wait" custom={direction}>
+                <motion.div
+                  key={activeIndex}
+                  className="absolute inset-0"
+                  custom={direction}
+                  variants={slideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                >
+                  <img
+                    src={currentTestimonial.clientImage}
+                    alt={currentTestimonial.clientName}
+                    className="w-full h-full object-cover"
+                  />
+                  {/* Quote Overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/90 via-black/70 to-transparent p-6 md:p-8">
+                    <p className="text-white text-base md:text-lg lg:text-xl font-medium">
+                      {currentTestimonial.imageQuote}
+                    </p>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
             </div>
 
             {/* Right side - Testimonial Card */}
             <div className="w-full lg:flex-1 lg:-ml-8 lg:relative lg:top-10 lg:right-10">
-              <div
-                className={`bg-white rounded-3xl shadow-xl p-6 md:p-8 lg:p-10 max-w-2xl mx-auto lg:mx-0 transition-all duration-500 hover:shadow-2xl ${
-                  isTransitioning ? 'opacity-0 translate-x-8' : 'opacity-100 translate-x-0'
-                }`}
-              >
-                {/* Quote */}
-                <p
-                  className="text-gray-900 text-base md:text-lg lg:text-xl xl:text-2xl leading-relaxed mb-6 md:mb-8"
-                  style={{ fontFamily: 'Oxanium, sans-serif' }}
+              <AnimatePresence mode="wait" custom={direction}>
+                <motion.div
+                  key={activeIndex}
+                  className="bg-white rounded-3xl shadow-xl p-6 md:p-8 lg:p-10 max-w-2xl mx-auto lg:mx-0"
+                  custom={direction}
+                  variants={cardVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  whileHover={{ boxShadow: '0 25px 50px rgba(0,0,0,0.12)' }}
                 >
-                  {currentTestimonial.quote}
-                </p>
+                  {/* Quote */}
+                  <p
+                    className="text-gray-900 text-base md:text-lg lg:text-xl xl:text-2xl leading-relaxed mb-6 md:mb-8"
+                    style={{ fontFamily: 'Oxanium, sans-serif' }}
+                  >
+                    {currentTestimonial.quote}
+                  </p>
 
-                {/* Client Info */}
-                <div className="flex items-center gap-3 md:gap-4">
-                  <img
-                    src={currentTestimonial.clientAvatar}
-                    alt={currentTestimonial.clientName}
-                    className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover ring-4 ring-gray-100 transition-all duration-300 hover:ring-[#f57c00]"
-                  />
-                  <div>
-                    <h4
-                      className="text-gray-900 text-base md:text-lg font-bold"
-                      style={{ fontFamily: 'Oxanium, sans-serif' }}
-                    >
-                      {currentTestimonial.clientName}
-                    </h4>
-                    <p className="text-gray-600 text-xs md:text-sm">
-                      {currentTestimonial.clientRole}
-                    </p>
+                  {/* Client Info */}
+                  <div className="flex items-center gap-3 md:gap-4">
+                    <motion.img
+                      src={currentTestimonial.clientAvatar}
+                      alt={currentTestimonial.clientName}
+                      className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover ring-4 ring-gray-100"
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    />
+                    <div>
+                      <h4
+                        className="text-gray-900 text-base md:text-lg font-bold"
+                        style={{ fontFamily: 'Oxanium, sans-serif' }}
+                      >
+                        {currentTestimonial.clientName}
+                      </h4>
+                      <p className="text-gray-600 text-xs md:text-sm">
+                        {currentTestimonial.clientRole}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </div>
+                </motion.div>
+              </AnimatePresence>
 
-              {/* Navigation Arrows - Below the card */}
+              {/* Navigation Arrows */}
               <div className="flex justify-center lg:justify-end gap-3 md:gap-4 mt-6 md:mt-8 max-w-2xl mx-auto lg:mx-0">
-                <button
+                <motion.button
                   onClick={handlePrev}
-                  className="w-12 h-12 md:w-14 md:h-14 bg-[#f57c00] text-white rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-[#e66b00] hover:shadow-lg hover:scale-110 active:scale-95"
+                  className="w-12 h-12 md:w-14 md:h-14 bg-[#f57c00] text-white rounded-xl flex items-center justify-center transition-colors duration-300 hover:bg-[#e66b00]"
+                  whileHover={{ scale: 1.1, boxShadow: '0 8px 25px rgba(245,124,0,0.35)' }}
+                  whileTap={{ scale: 0.92 }}
                   aria-label="Previous testimonial"
                 >
                   <ChevronLeft size={20} className="md:hidden" />
                   <ChevronLeft size={24} className="hidden md:block" />
-                </button>
-                <button
+                </motion.button>
+                <motion.button
                   onClick={handleNext}
-                  className="w-12 h-12 md:w-14 md:h-14 bg-[#f57c00] text-white rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-[#e66b00] hover:shadow-lg hover:scale-110 active:scale-95"
+                  className="w-12 h-12 md:w-14 md:h-14 bg-[#f57c00] text-white rounded-xl flex items-center justify-center transition-colors duration-300 hover:bg-[#e66b00]"
+                  whileHover={{ scale: 1.1, boxShadow: '0 8px 25px rgba(245,124,0,0.35)' }}
+                  whileTap={{ scale: 0.92 }}
                   aria-label="Next testimonial"
                 >
                   <ChevronRight size={20} className="md:hidden" />
                   <ChevronRight size={24} className="hidden md:block" />
-                </button>
+                </motion.button>
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   )

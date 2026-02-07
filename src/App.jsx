@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
 import Header from './reuseable/Header'
 import Home from './pages/home/Home'
 import Footer from './reuseable/Footer'
@@ -16,7 +17,6 @@ const App = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Simulate initial loading
     const timer = setTimeout(() => {
       setLoading(false)
     }, 2000)
@@ -24,29 +24,30 @@ const App = () => {
     return () => clearTimeout(timer)
   }, [])
 
-  // Show loader while loading
-  if (loading) {
-    return <Loader variant="bulb" text="Illuminating Your Experience..." />
-  }
-
   return (
-    <Router>
-      <div className="min-h-screen bg-white">
-        <Header />
-        <main>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<AboutUs />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/acoustic-solutions" element={<AcousticSolutions />} />
-            <Route path="/resources" element={<Resources />} />
-            <Route path="/contacts" element={<Contacts />} />
-            <Route path="/contact" element={<Contacts />} />
-          </Routes>
-        </main>
-        <Footer/>
-      </div>
-    </Router>
+    <AnimatePresence mode="wait">
+      {loading ? (
+        <Loader key="loader" variant="bulb" text="Illuminating Your Experience..." />
+      ) : (
+        <Router key="app">
+          <div className="min-h-screen bg-white">
+            <Header />
+            <main>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<AboutUs />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/acoustic-solutions" element={<AcousticSolutions />} />
+                <Route path="/resources" element={<Resources />} />
+                <Route path="/contacts" element={<Contacts />} />
+                <Route path="/contact" element={<Contacts />} />
+              </Routes>
+            </main>
+            <Footer/>
+          </div>
+        </Router>
+      )}
+    </AnimatePresence>
   )
 }
 
