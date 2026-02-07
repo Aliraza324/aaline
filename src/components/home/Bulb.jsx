@@ -27,7 +27,7 @@ const Bulb = () => {
         <div className="bg-[#87530C] rounded-3xl overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Left Side - Text and Bulb Image */}
-            <div className="relative p-8 sm:p-12 lg:p-16 flex flex-col justify-between min-h-[400px] lg:min-h-[500px]">
+            <div className="relative p-8 sm:p-12 lg:p-16 flex flex-col justify-between lg:min-h-[500px]">
               {/* Heading */}
               <h2
                 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight max-w-md"

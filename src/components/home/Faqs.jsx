@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import sectionImg from '../../assets/images/sections.png'
+import { useScrollAnimation } from '../../hooks/useScrollAnimation'
 
 const Faqs = () => {
   const [openIndex, setOpenIndex] = useState(0)
@@ -27,6 +28,11 @@ const Faqs = () => {
     setOpenIndex(openIndex === index ? -1 : index)
   }
 
+  const [titleRef, titleVisible] = useScrollAnimation({ threshold: 0.3 })
+  const [headingRef, headingVisible] = useScrollAnimation({ threshold: 0.3 })
+  const [faqsRef, faqsVisible] = useScrollAnimation({ threshold: 0.1 })
+  const [imageRef, imageVisible] = useScrollAnimation({ threshold: 0.3 })
+
   return (
     <section className="bg-white py-12 md:py-20">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
@@ -35,7 +41,10 @@ const Faqs = () => {
           <div>
             {/* Header */}
             <div className="mb-8">
-              <div className="inline-block relative mb-4">
+              <div
+                ref={titleRef}
+                className={`inline-block relative mb-4 fade-in ${titleVisible ? 'visible' : ''}`}
+              >
                 <h3
                   className="text-sm font-bold tracking-wider uppercase text-gray-900 relative z-10 px-2"
                   style={{ fontFamily: 'Oxanium, sans-serif' }}
@@ -46,7 +55,8 @@ const Faqs = () => {
                 <div className="absolute bottom-0 left-0 w-full h-2 bg-[#E48400] z-0"></div>
               </div>
               <h2
-                className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight"
+                ref={headingRef}
+                className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight slide-up ${headingVisible ? 'visible' : ''}`}
                 style={{ fontFamily: 'Oxanium, sans-serif' }}
               >
                 Popular questions about our company
@@ -54,31 +64,31 @@ const Faqs = () => {
             </div>
 
             {/* FAQ Accordion */}
-            <div className="space-y-4">
+            <div ref={faqsRef} className="space-y-4">
               {faqs.map((faq, index) => (
                 <div
                   key={index}
-                  className="border border-gray-200 rounded-lg overflow-hidden"
+                  className={`border border-gray-200 rounded-lg overflow-hidden stagger-item ${faqsVisible ? 'visible' : ''}`}
                 >
                   {/* Question Button */}
                   <button
                     onClick={() => toggleFaq(index)}
-                    className="w-full flex items-center justify-between p-4 sm:p-5 bg-white hover:bg-gray-50 transition-colors duration-200"
+                    className="w-full flex items-center justify-between p-4 sm:p-5 bg-white hover:bg-gray-50 transition-all duration-300 group"
                   >
                     <span
-                      className="text-left text-base sm:text-lg font-semibold text-gray-900"
+                      className="text-left text-base sm:text-lg font-semibold text-gray-900 group-hover:text-[#E48400] transition-colors duration-300"
                       style={{ fontFamily: 'Oxanium, sans-serif' }}
                     >
                       {faq.question}
                     </span>
-                    <span className="flex-shrink-0 ml-4 w-8 h-8 rounded-md bg-[#E48400] text-white flex items-center justify-center text-xl font-bold">
+                    <span className={`flex-shrink-0 ml-4 w-8 h-8 rounded-md bg-[#E48400] text-white flex items-center justify-center text-xl font-bold transition-all duration-300 group-hover:scale-110 ${openIndex === index ? 'rotate-180' : ''}`}>
                       {openIndex === index ? '−' : '+'}
                     </span>
                   </button>
 
                   {/* Answer */}
                   {openIndex === index && (
-                    <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-2 bg-gray-50">
+                    <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-2 bg-gray-50 animate-on-scroll visible">
                       <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
                         {faq.answer}
                       </p>
@@ -90,11 +100,14 @@ const Faqs = () => {
           </div>
 
           {/* Right Side - Images */}
-          <div className="relative h-[400px] sm:h-[500px] lg:h-[600px]">
+          <div
+            ref={imageRef}
+            className={`relative h-[400px] sm:h-[500px] lg:h-[600px] scale-in ${imageVisible ? 'visible' : ''}`}
+          >
             <img
               src={sectionImg}
               alt="Electrical services"
-              className="w-full h-full object-cover rounded-2xl "
+              className="w-full h-full object-cover rounded-2xl hover:scale-105 transition-transform duration-700"
             />
           </div>
         </div>
